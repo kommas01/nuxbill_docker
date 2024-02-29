@@ -1,50 +1,16 @@
-# Startup from alpine
 FROM alpine:latest
-LABEL Maintainer = "Hilman Maulana, Ibnu Maksum, Rizki Rahmatullah"
-LABEL Description = "PHPNuxBill (PHP Mikrotik Billing) is a web-based application (MikroTik API PHP class) Voucher management for MikroTik Hotspot."
-
-# Setup document root
 WORKDIR /var/www/html
-
-# Expose the port nginx is reachable on
-EXPOSE 80
-EXPOSE 3306
-
-# Install packages
-RUN apk add --no-cache \
-    nginx \
-    php81 \
-    php81-fpm \
-    php81-gd \
-    php81-mbstring \
-    php81-mysqli \
-    php81-session \
-    php81-pdo \
-    php81-pdo_mysql \
-    php81-zip \
-    mysql \
-    mysql-client \
-    libzip-dev \
-    zip \
-    supervisor
-
-# Configure nginx
+VOLUME [/var/www/html]
+EXPOSE 1812/udp 1813/udp 3306/tcp 80/tcp
+RUN apk add --no-cache nginx php82 php82-fpm php82-gd php82-mbstring php82-mysqli php82-session php82-pdo php82-pdo_mysql php82-zip mysql mysql-client libzip-dev zip unzip git wget nano freeradius freeradius-mysql freeradius-utils supervisor
+RUN git clone https://github.com/hotspotbilling/phpnuxbill.git /tmp/gitclone
+RUN mv /tmp/gitclone/* /var/www/html/
 COPY conf/nginx.conf /etc/nginx/nginx.conf
-
-# Configure MySQL
-COPY conf/my.cnf /etc/mysql/my.cnf
+COPY conf/my.cnf /etc/mysql/my.cnf  
 COPY conf/mysql.sh /app/mysql.sh
 RUN chmod +x /app/mysql.sh
-
-# Configure PHP-FPM
-COPY conf/fpm-pool.conf /etc/php81/php-fpm.d/www.conf
-COPY conf/php.ini /etc/php81/conf.d/custom.ini
-
-# Configure supervisord
+COPY conf/fpm-pool.conf /etc/php82/php-fpm.d/www.conf
+COPY conf/php.ini /etc/php82/conf.d/custom.ini
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Add application
-COPY --chown=nginx src /var/www/html/
-
-# Let supervisord start nginx & php-fpm
+RUN chown -R nginx:nginx /var/www/html/
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
