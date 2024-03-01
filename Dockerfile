@@ -1,6 +1,9 @@
 # Mulai dari base Alpine Linux terbaru
 FROM alpine:latest
 
+LABEL maintainer="Kommas01"
+LABEL description="PHPNuxBill - PHP Mikrotik Billing"
+
 # Atur direktori kerja ke /var/www/html
 WORKDIR /var/www/html
 
@@ -8,7 +11,10 @@ WORKDIR /var/www/html
 VOLUME /var/www/html
 
 # Buka port berikut: 
-EXPOSE 3306/tcp 80/tcp
+EXPOSE 1812/udp
+EXPOSE 1813/udp
+EXPOSE 3306/tcp
+EXPOSE 80/tcp
 
 # Pasang paket yang dibutuhkan
 RUN apk add --no-cache nginx php82 php82-fpm php82-gd php82-mbstring php82-mysqli php82-session php82-pdo php82-pdo_mysql php82-zip php82-curl mysql mysql-client libzip-dev zip unzip git wget nano freeradius freeradius-mysql freeradius-utils supervisor
