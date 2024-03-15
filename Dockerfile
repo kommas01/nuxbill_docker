@@ -34,13 +34,6 @@ COPY conf/fpm-pool.conf /etc/php82/php-fpm.d/www.conf
 COPY conf/php.ini /etc/php82/conf.d/custom.ini 
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Atur izin
-RUN chown -R nginx:nginx /var/www/html/
-RUN chmod 777 /var/www/html/ui/cache /var/www/html/ui/compiled
-
-#rename folder pages_example to pages
-RUN mv /var/www/html/pages_template /var/www/html/pages
-
 #Activate Cronjob for Expired and Reminder.
 RUN echo "0 */4 * * * php /var/www/html/system/ && php -f cron.php" >> /var/spool/cron/cront
 RUN echo "0 7 * * * php /var/www/html/system && php -f cron_reminder.php" >> /var/spool/cron/cront
