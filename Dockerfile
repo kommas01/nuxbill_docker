@@ -35,8 +35,6 @@ COPY conf/php.ini /etc/php82/conf.d/custom.ini
 COPY conf/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 #Activate Cronjob for Expired and Reminder.
-RUN echo "0 */4 * * * php /var/www/html/system/ && php -f cron.php" >> /var/spool/cron/cront
-RUN echo "0 7 * * * php /var/www/html/system && php -f cron_reminder.php" >> /var/spool/cron/cront
 
 # Mulai layanan
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
